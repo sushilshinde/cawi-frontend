@@ -1,70 +1,169 @@
-# Getting Started with Create React App
+# Project Setup with Docker and Dev Environment
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This README provides detailed instructions to set up and run a React application using Docker for both development and production environments.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## **1. Prerequisites**
 
-### `npm start`
+Ensure the following tools are installed:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) (or Docker Engine on Linux)
+- [Podman](https://podman.io/) for Windows
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## **2. Folder Structure**
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The project folder structure is as follows:
 
-### `npm run build`
+```
+project-root/
+├── src/
+│   ├── App.js
+│   ├── index.js
+│   ├── ...
+├── public/
+│   ├── index.html
+├── DockerfileProd
+├── DockerfileDev
+├── docker-compose.dev.yml
+├── docker-compose.prod.yml
+├── package.json
+├── README.md
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## **3. Development Setup**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### **3.1 Dockerfile for Development**
 
-### `npm run eject`
+- **Path:** `DockerfileDev`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### **3.2 Development Docker Compose**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Path:** `docker-compose.dev.yml`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### **3.3 Start Development Environment**
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+In development mode, you can make live changes to the source code, and they will automatically reflect in the running application without needing to rebuild the container.
 
-## Learn More
+1. Start the application:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Start the application:
+   ```bash
+   docker-compose -f docker-compose.dev.yml up --build
+   ```
+2. Visit [http://localhost:3000](http://localhost:3000).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## **4. Production Setup**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### **4.1 Dockerfile for Production**
 
-### Analyzing the Bundle Size
+- **Path:** `DockerfileProd`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### **4.2 Production Docker Compose**
 
-### Making a Progressive Web App
+- **Path:** `docker-compose.prod.yml`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### **4.3 Start Production Environment**
 
-### Advanced Configuration
+1. Build and run the container:
+   ```bash
+   docker-compose -f docker-compose.prod.yml up --build
+   ```
+2. Visit [http://localhost](http://localhost).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## **5. Environment Variables**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### **5.1 Define Environment Variables**
 
-### `npm run build` fails to minify
+- **Path:** `.env`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### **5.2 Inject Environment Variables**
+
+Use the following in `docker-compose`:
+
+- **Path:** `docker-compose.dev.yml` or `docker-compose.prod.yml`
+
+---
+
+## **6. Stop Containers**
+
+Stop containers for development or production:
+
+```bash
+docker-compose -f docker-compose.dev.yml down
+# or
+docker-compose -f docker-compose.prod.yml down
+```
+
+---
+
+## **7. Debugging Tips**
+
+- Use Docker logs:
+  ```bash
+  docker-compose logs -f
+  ```
+
+---
+
+## **8. Cleanup**
+
+To remove containers, images, and volumes:
+
+```bash
+docker-compose -f docker-compose.dev.yml down --volumes
+```
+
+---
+
+## **9. Setting Up Podman on Windows**
+
+### **9.1 Install Podman**
+
+1. Download and install Podman for Windows from [Podman.io](https://podman.io/getting-started/installation).
+2. Configure Podman to use the WSL2 backend for compatibility with Docker commands.
+
+### **9.2 Enable Docker Compatibility**
+
+1. Install the `podman-docker` package:
+   ```bash
+   podman system migrate
+   ```
+2. Test compatibility by running Docker commands through Podman:
+   ```bash
+   podman-compose --help
+   ```
+
+### **9.3 Run Docker Compose with Podman**
+
+To use `docker-compose` with Podman:
+
+1. Ensure `podman-compose` is installed:
+   ```bash
+   pip install podman-compose
+   ```
+
+2. Run the development environment:
+   ```bash
+   podman-compose -f docker-compose.dev.yml up --build
+   ```
+
+3. Stop the environment:
+   ```bash
+   podman-compose -f docker-compose.dev.yml down
+   ```
+
+### **9.4 Notes**
+
+- Ensure that your project mounts and ports are accessible via WSL2.
+- Replace any `docker` references in scripts or commands with `podman` if necessary.
+
+---

@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: DockerfileDev
+    ports:
+      - "3000:3000" # Map container port 3000 to host port 3000
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Enable polling for live reloading in Docker
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./src:/app/src         # Mount the source code for live updates
+      - ./public:/app/public   # Mount the public directory for static files
+      - /app/node_modules      # Prevent overwriting node_modules
